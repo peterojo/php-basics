@@ -1,7 +1,16 @@
 <?php
 if(isset($_FILES['uploadedFile'])) {
 	$file = $_FILES['uploadedFile'];
-	//die(var_dump($_FILES));
+
+	$filename = $file['name'];
+	$ext = strrchr($filename, ".");
+
+	$allowedExts = [".png", ".jpg", ".jpeg", ".bmp", ".gif"];
+
+	if(!in_array($ext, $allowedExts)) {
+		header('Location: uploads.php?message=Invalid+file');
+	}
+
 	move_uploaded_file($file['tmp_name'], 'images/'.$file['name']);
 }
 
@@ -17,6 +26,16 @@ if(isset($_FILES['uploadedFile'])) {
 		<div class="container">
 			<h1>Let's upload some files!</h1>
 			<hr>
+			<?php
+				if(isset($_GET['message'])) {
+			?>
+			<div class="alert alert-dismissable alert-danger">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<strong>Error!</strong> <?=$_GET['message'];?>
+			</div>
+			<?php
+				}
+			?>
 			<form action="" method="post" class="form-inline" enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="uploadedFile">Upload your file:</label>
